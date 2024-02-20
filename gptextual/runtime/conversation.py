@@ -581,11 +581,3 @@ Do NOT escape markdown as codeblocks using '`' chars.All messages will be render
 
 
 Conversation.search_df = None
-
-if __name__ == "__main__":
-    df = Conversation.search("japanese")
-    print(df)
-    df = Conversation.search("cast")
-    print(df)
-    df = Conversation.search("blabla")
-    print(df)

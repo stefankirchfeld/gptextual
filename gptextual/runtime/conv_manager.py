@@ -6,16 +6,17 @@ from pathlib import Path
 from dataclasses import dataclass
 import threading
 
+from gptextual.logging import logger
 from gptextual.config import AppConfig
 
 from .models import ChatModel
 from .conversation import Conversation, conversation_path
-from gptextual.logging import logger
 
 
 @dataclass
 class ConversationManager:
     conversations = {}
+    # Needed so we can monkey patch in an extension package
     conversation_class = Conversation
 
     @classmethod
