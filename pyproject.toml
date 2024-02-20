@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gptextual"
+version = "0.0.1"
+description = "A configurable, terminal based Chat client for LLMs built with Textual"
+readme = "README.md"
+license = { file="LICENSE" }
+authors = [{ name = "Stefan Kirchfeld", email = "stefan.kirchfeld@gmail.com" }]
+maintainers = [{ name = "Stefan Kirchfeld", email = "stefan.kirchfeld@gmail.com" }]
+keywords = ["gpt", "chat", "llm", "chatgpt", "langchain", "openai", "sap", "textual", "terminal"]
+requires-python = ">= 3.10"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "httpx~=0.26.0",
+    "humanize~=4.9.0",
+    "langchain~=0.1.5",
+    "langchain-core~=0.1.19",
+    "polars~=0.20.7",
+    "pydantic~=2.6.1",
+    "pyperclip~=1.8.2",
+    "rich~=13.7.0",
+    "shortuuid~=1.0.11",
+    "textual==0.50.1",  # Note the use of '==' for specific version
+    "tiktoken~=0.5.2",
+    "toolong==1.2.0",   # Note the use of '==' for specific version
+    "pyyaml~=6.0.1"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/your-package-name"
+"Repository" = "https://github.com/yourusername/your-package-name"
+
+
+[project.optional-dependencies]
+openai = ["langchain-openai~=0.0.5"]
+google = ["langchain-google-genai~=0.0.9"]
+sap = ["generative-ai-hub-sdk~=1.2.2"]
+all = ["langchain-openai~=0.0.5", "langchain-google-genai~=0.0.9", "generative-ai-hub-sdk~=1.2.2"]
+
+[project.scripts]
+gptx = "gptextual.textual_ui.app:run"
+
+[project.entry-points.gptextual_function]
+google_web_search = "gptextual.runtime.function_calling.functions:google_web_search"
+
+[tool.setuptools.package-data]
+"*" = ["*.tcss"]
