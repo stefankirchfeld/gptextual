@@ -1,0 +1,363 @@
+$orange: #E96330;
+$orange-lighten-1: #f06d38;
+$blue: #2c4151;
+
+$main-lighten-3: #6f9ebb;
+$main-lighten-2: #6A8DA3; /* Soft Blue */
+$main-lighten-1: #567D8C; /* Light Blue */
+$main: #3B6578; /* Main Blue */
+$main-darken-1: #2E4F61; /* Dark Blue */
+$main-darken-2: #243A4B; /* Darker Blue */
+
+$background: #ededed; /* Very Light Grey */
+$background-darken-1: #ededed; /* Light Grey */
+$background-dark: #b0b0b0; /* Dark Grey */
+$text: #252525; /* Dark Text */
+$text-muted: #555555; /* Muted Text */
+$text-disabled: #777777; /* Disabled Text */
+$text-selection: #293340;
+$left-border-trim: vkey $main-lighten-2 15%;
+
+* {
+  scrollbar-color: $background;
+  scrollbar-color-hover: $orange-lighten-1;
+  scrollbar-color-active: $orange;
+  color: #fff;
+}
+
+Chat {
+  height: 1fr;
+  width: 1fr;
+}
+
+#chat-input {
+  box-sizing: border-box;
+  margin-right: 1;
+  color: #fff;
+  background: $panel;
+}
+
+.text-area--cursor-line {
+  background: $text-selection;
+}
+
+#chat-input-text-container {
+  height: auto;
+  width: 100%;
+  background: $panel;
+}
+
+#btn-submit {
+  margin-left: 3;
+}
+
+#chat-scroll-container {
+  background: $background-dark;
+}
+
+#chat-input-container {
+  dock: bottom;
+  height: auto;
+  padding: 1 2;
+  background: $panel;
+}
+
+ChatHeader {
+  width: 1fr;
+  height: auto;
+  padding: 1 2;
+  background: $background;
+  border-left: $left-border-trim;
+}
+
+ChatHeader > Static {
+  width: auto;
+}
+
+ChatHeader #title-static {
+  text-style: bold;
+  color: $orange;
+}
+
+ChatHeader #model-static {
+  color: $text-muted;
+}
+
+ChatHeader > Horizontal {
+  width: 1fr;
+}
+
+ChatHeader Vertical {
+  width: 1fr;
+}
+
+IsTyping {
+  dock: top;
+  display: none;
+  color: $text;
+  height: 1;
+  align-horizontal: right;
+}
+
+IsTyping Label {
+  width: auto;
+}
+
+IsTyping LoadingIndicator {
+  width: 11;
+  color: $main;
+}
+
+#chat-options-container {
+  padding: 2 2;
+  color: #000;
+}
+
+ChatList {
+  dock: left;
+  height: 1fr;
+  width: 32;
+  background: $background;
+}
+
+#command_input {
+  min-height: 4;
+}
+
+ChatList #cl-header-container {
+  height: 4;
+  padding: 1 2;
+  background: $background;
+}
+
+ChatList .app-title {
+  color: $main-lighten-2;
+  text-style: bold;
+}
+
+ChatList .app-subtitle {
+  color: $text-muted;
+}
+
+ChatList #cl-button-container {
+  dock: bottom;
+  padding: 1 2;
+  height: 5;
+  width: 1fr;
+  margin-bottom: 1;
+}
+
+ChatList #cl-option-list {
+  height: 1fr;
+  width: 1fr;
+  margin-top: 1;
+  scrollbar-size-vertical: 1;
+}
+
+ChatList #cl-new-chat-button {
+  background: $main-darken-2;
+  border: none;
+  width: 100%;
+  height: 3;
+}
+
+OptionList:focus {
+  border: wide $main;
+}
+
+ChatList #cl-new-chat-button:hover {
+  background: $main-lighten-2;
+}
+
+ChatboxContainer {
+  width: 100%;
+  height: auto;
+  align: left top;
+  padding-right: 20;
+  background: $background-dark;
+}
+
+ChatboxContainer.assistant-message {
+  align: left top;
+  padding-left: 20;
+  padding-right: 0;
+}
+
+Chatbox {
+  color: $text;
+  background: $background-darken-1;
+  height: auto;
+  width: auto;
+  max-width: 1fr;
+  margin: 1 2;
+  padding: 1 2;
+}
+
+Chatbox:focus {
+  border-left: thick $orange;
+  padding: 1 2 1 1;
+}
+
+Chatbox.assistant-message {
+  background: $main-darken-2;
+  color: $text;
+}
+
+#model-select-label {
+  margin-left: 2;
+  margin-bottom: 1;
+  color: $text;
+}
+
+ChatOptions {
+  height: auto;
+  background: $background-dark;
+}
+#provider-select {
+  background: $main-darken-1;
+  margin-bottom: 2;
+}
+
+#model-select {
+  background: $main-darken-1;
+}
+
+#model-select SelectCurrent Static {
+  color: $text;
+}
+
+#provider-select SelectCurrent Static {
+  color: $text;
+}
+
+CommandFooter {
+  background: $panel;
+}
+
+CommandFooter > .footer--highlight {
+  background: $main-lighten-1;
+}
+
+CommandFooter > .footer--key {
+  text-style: bold;
+  background: $main-lighten-3;
+  color: $text;
+}
+
+CommandFooter > .footer--highlight-key {
+  background: $orange-lighten-1; 
+  text-style: bold;
+  color: $text;
+}
+
+Input .input--cursor {
+  color: $main-lighten-2;
+}
+
+OptionList {
+  background: $background;
+  color: $text;
+}
+
+.option-list--separator {
+  background: $background;
+}
+
+Search .option-list--option-highlighted {
+  background: $main-darken-2;
+  color: #fff;
+} 
+
+.option-list--option-highlighted {
+  background: #fff;
+  color: $main-darken-1;
+}
+.option-list--option-hover {
+  background: $main-darken-1;
+  color: #fff;
+}
+.option-list--option-hover-highlighted {
+  background: $panel;
+  color: #fff;
+}
+
+.h-4 {
+  height: 4;
+}
+Input {
+  border: tall $main-lighten-1 25%;
+}
+
+Input:focus {
+  border: tall $main;
+}
+
+MessageInfo {
+  align: center middle;
+}
+
+MessageInfo > #outermost-container {
+  width: 80%;
+  height: 60%;
+  background: $background;
+}
+
+MessageInfo #inner-container {
+  height: 1fr;
+}
+
+MessageInfo #message-info-header {
+  dock: top;
+  width: 1fr;
+  height: auto;
+  background: $main-darken-1;
+  color: $text;
+}
+
+MessageInfo #message-info-header Tab {
+  width: 1fr;
+}
+
+MessageInfo #message-info-footer {
+  dock: bottom;
+  height: 3;
+  padding: 1 2;
+  background: $main-lighten-2;
+  color: $text;
+  width: 1fr;
+}
+
+MessageInfo #timestamp {
+  dock: left;
+  height: 3;
+  width: auto;
+}
+
+MessageInfo #token-count {
+  dock: right;
+  height: 3;
+  width: auto;
+}
+
+Tabs:focus .underline--bar {
+  color: $text 35%;
+}
+
+TokenAnalysis {
+  height: auto;
+}
+
+#inner-container ContentSwitcher {
+  height: auto;
+  padding: 2 4;
+}
+
+#inner-container #markdown-content {
+  height: auto;
+  color: $text;
+}
+
+#inner-container #metadata {
+  height: auto;
+  color: $text;
+}
