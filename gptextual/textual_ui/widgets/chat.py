@@ -18,7 +18,12 @@ from textual.widget import Widget
 from textual.widgets import TextArea, Button
 
 from gptextual.config import AppConfig
-from gptextual.runtime import ConversationManager, Conversation, StreamingMessage, AppContext
+from gptextual.runtime import (
+    ConversationManager,
+    Conversation,
+    StreamingMessage,
+    AppContext,
+)
 from gptextual.runtime.langchain.schema import new_message_of_type
 
 from gptextual.textual_ui.widgets.typing_indicator import IsTyping
@@ -147,7 +152,11 @@ class Chat(Widget):
 
     @property
     def current_conversation(self) -> Conversation:
-        return None if self.chat_id is None else ConversationManager.get_conversation(self.chat_id)
+        return (
+            None
+            if self.chat_id is None
+            else ConversationManager.get_conversation(self.chat_id)
+        )
 
     def scroll_to_latest_message(self):
         if self.chat_container is not None:

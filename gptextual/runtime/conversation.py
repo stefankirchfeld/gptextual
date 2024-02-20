@@ -372,7 +372,7 @@ class Conversation:
             "%Y-%m-%d %H:%M:%S"
         )
         header = f"# Conversation: {self.title}\n"
-        header += f"Model: {self.model.name} by {self.model.model_provider}\n\n"
+        header += f"Model: {self.model.name}\n\n"
         header += f"API Provider: {self.model.api_provider}"
         header += f"Created At: {create_time}\n"
         header += "\n---\n\n"  # Add a horizontal rule for styling
