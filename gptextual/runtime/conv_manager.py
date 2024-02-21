@@ -7,7 +7,6 @@ from dataclasses import dataclass
 import threading
 
 from gptextual.logging import logger
-from gptextual.config import AppConfig
 
 from .models import ChatModel
 from .conversation import Conversation, conversation_path
@@ -76,7 +75,6 @@ class ConversationManager:
 
     @classmethod
     def create_conversation(cls, *, model: ChatModel, system_message=None) -> str:
-        system_message = system_message or AppConfig.get_instance().system_message
         conv = cls.conversation_class.create_new(
             model=model,
             system_message=system_message,

@@ -13,7 +13,7 @@ maintainers = [{ name = "Stefan Kirchfeld", email = "stefan.kirchfeld@gmail.com"
 keywords = ["gpt", "chat", "llm", "chatgpt", "langchain", "openai", "sap", "textual", "terminal"]
 requires-python = ">= 3.10"
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -28,15 +28,15 @@ dependencies = [
     "pyperclip~=1.8.2",
     "rich~=13.7.0",
     "shortuuid~=1.0.11",
-    "textual==0.50.1",  # Note the use of '==' for specific version
+    "textual==0.50.1",
     "tiktoken~=0.5.2",
-    "toolong==1.2.0",   # Note the use of '==' for specific version
+    "toolong==1.2.0",
     "pyyaml~=6.0.1"
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/your-package-name"
-"Repository" = "https://github.com/yourusername/your-package-name"
+"Homepage" = "https://github.com/stefankirchfeld/gptextual"
+"Repository" = "https://github.com/stefankirchfeld/gptextual"
 
 
 [project.optional-dependencies]

@@ -86,9 +86,13 @@ class Chatbox(Widget, can_focus=True):
             for lang, code in codeblocks:
                 output += f"{code}\n\n"
             pyperclip.copy(output)
+            self.notify("Codeblocks have been copied to clipboard", timeout=3)
+        else:
+            self.notify("There are no codeblocks in the message to copy", timeout=3)
 
     def action_copy(self) -> None:
         pyperclip.copy(self.message.content)
+        self.notify("Message content has been copied to clipboard", timeout=3)
 
     def action_details(self) -> None:
         self.app.push_screen(

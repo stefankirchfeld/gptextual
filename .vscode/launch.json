@@ -8,7 +8,7 @@
       "name": "Debug GPTextual",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/gptextual/app.py",
+      "program": "${workspaceFolder}/gptextual/textual_ui/app.py",
       "console": "integratedTerminal",
       "justMyCode": false 
     }

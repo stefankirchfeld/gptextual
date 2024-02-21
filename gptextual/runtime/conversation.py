@@ -551,9 +551,10 @@ class Conversation:
     ):
         if model is None:
             raise ValueError("No model provided for conversation")
+
         _system_message = f"""
 The current UTC datetime is {datetime.utcnow()}.
-Do NOT escape markdown as codeblocks using '`' chars.All messages will be rendered as markdown by default!
+Do not escape markdown as codeblocks using '`' chars.Messages will be rendered as markdown by default!
 """
         if system_message is not None:
             _system_message += f"\n{system_message}"

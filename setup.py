@@ -1,17 +1,15 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="gptextual",  # This is the name of your PyPI-package.
-    version="0.0.1",  # Update the version number for new releases
-    packages=find_packages(
-        exclude=["tests"]
-    ),  # This will include all sub-packages in the package directory
+    name="gptextual",
+    version="0.0.1",
+    packages=find_packages(exclude=["tests"]),
     package_data={"": ["*.tcss"]},
     include_package_data=True,
     description="A configurable, terminal based Chat client for LLMs built with Textual",
     author="Stefan Kirchfeld",
     author_email="stefan.kirchfeld@gmail.com",
-    url="https://github.com/yourusername/your-package-name",  # The URL to the github repo
+    url="https://github.com/stefankirchfeld/gptextual",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3.10",

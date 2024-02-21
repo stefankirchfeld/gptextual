@@ -2,11 +2,11 @@
 
 ## A Terminal-Based Chat Client for various LLMs built with [Textual](https://textual.textualize.io/)
 
-![Light Theme](./assets/light_theme.png)
+![Light Theme Screenshot](./assets/light_theme.png)
 
 ### Features
 
-- Locally persisted conversations with LLMs from multiple API providers (OpenAI, Google, SAP)
+- Locally persisted conversations with LLMs from multiple API providers (OpenAI, Google, SAP, more to come)
 - Configurable as to which providers and models you want to chat with
 - Multiline text input
 - LLM streaming (if the model supports it)
@@ -15,8 +15,8 @@
 - Conversations are stored as [polars](https://pola.rs/) DataFrames, so can easily be processed/exported into other formats if required
 - Copy messages or only code blocks to clibboard
 - LLM Function calling
-- Runs fully in the terminal, so can be used wherever you can start a Terminal (e.g, VSCode)
-
+- Automatic trimming of conversation to the context window size of the LLM (if tokenization model is available)
+- Light and Dark theme
 
 ### Related Projects and Credits
 
@@ -27,7 +27,6 @@ This app also integrates [TooLong](https://github.com/Textualize/toolong) as the
 The LLMs are called and streamed via [LangChain](https://python.langchain.com/docs/get_started/introduction) API clients.
 
 The connection to SAPs Generative AI Hub is provided by the corresponding [SDK library](https://pypi.org/project/generative-ai-hub-sdk/).
-
 
 ## Installation
 
@@ -72,16 +71,39 @@ gptextual can be installed with these flavors:
 
 This way you can limit your installation footprint if you only want to use native OpenAI, for example.
 
-## Usage
+## Quickstart
 
-After you created the config file `~/.gptextual/config.yml` and configured access to at least one API provider (OpenAI, Google, SAP, see details below), you can start the app via the Terminal with
+### 1. Create file `~/.gptextual/config.yml` and enter your API key for the API provider(s) you want to connect to
+
+```yaml
+api_config:
+  # Open AI
+  openai:
+    api_key: <your key>
+  
+  # Google Gen AI APIs
+  google:
+    api_key: <your key>
+
+  # SAP Gen AI Hub for enterprise scenarios
+  gen-ai-hub:
+    client_id: str
+    client_secret: str
+    auth_url: str
+    api_base: str
+    resource_group: str
+```
+
+If you don't need one or more of the API providers, just remove them from the yaml file.
+Other API providers (like Huggingface) will be added soon.
+
+### 2. Start the app by opening a terminal, then:
 
 ```bash
 gptx
 ```
 
-Make sure you activated the virtual environemnt.
-
+Make sure you activated the virtual environment.
 
 ## Terminals to use
 
@@ -101,7 +123,14 @@ For developers, the VSCode integrated terminal also renders the app well, markdo
 
 For more info on general settings and optimizations when using Textual based apps, consult the [Textual FAQ](https://textual.textualize.io/FAQ/).
 
-# Configuration
+## Using the UI
+
+Textual based apps can be navigated with a mouse or by keyboard only.
+
+It is recommended to learn the key shortcuts and tab orders of the UI elements for the best and most efficient user experience.
+
+
+# Configuration Guide
 
 In order to use `gptextual` you need to create a YAML file at `~/.gptextual/config.yml` and maintain the configuration for at least 1 API provider (OpenAI, Google, etc.).
 
@@ -181,25 +210,12 @@ api_config:
 
 **Double check the model names since they will be passed to the LangChain API client as-is.**
 
-The `contex_window` parameter is used to automatically default a reasonable value for the maximum number of output tokens requested.
+The `contex_window` parameter is used to 
+
+- automatically default a reasonable value for the maximum number of output tokens requested
+- automatically trim the next request to only contain conversation messages that still fit into the context window size
 
 **Note: If you don't specify any models, default models will be chosen which reflect the time of the `gptextual` release. For SAP Gen AI Hub, no defaults are provided, so the model config is mandatory.**
-
-
-## UI Configuration
-
-There is a config section directly related to the textual UI:
-
-```yaml
-textual:
-  # When LLMs support streaming, this number specifies after how many response chunks
-  # a refresh and re-layouting of the chat message will be triggered in the textual framework.
-  # A smaller number will give a smoother streaming experience but will lead to more refresh calls.
-  refresh_no_stream_chunks: 5
-
-  # gptextual comes with a light and dark theme.
-  theme: light|dark
-```
 
 ## Function Calling
 
@@ -234,7 +250,7 @@ api_config:
 ```
 ### Registering functions
 
-#### Develop your function in a new pip package and decorate it with the provided function decorator `register_for_function_calling`:
+#### 1. Develop your function in a new pip package and decorate it with the provided function decorator `register_for_function_calling`:
 
 For example:
 
@@ -277,7 +293,7 @@ Specifically:
  - Provide the parameters in the docstring as given in the example
 
 
-#### Define an entry point in the `setup.py`/`pyproject.toml` of your project:
+#### 2. Define an entry point with name `gptextual_function` in the `setup.py`/`pyproject.toml` of your project:
 
 ```python
 
@@ -290,7 +306,7 @@ entry_points={
 
 **Note: `gptextual` will only load your entry point, and expect each function to have the decorator above. So specifying one function per module in the entry point is enough, because all functions will be loaded when the module loads.**
 
-#### Configure which functions should be used at runtime
+#### 3. Configure which functions should be used at runtime
 
 Each function in your python environment that is registered via the decorator and entry point can be used for LLM function calling. In order to actually pick the functions you want to use, you need to list them in the `config.yml`:
 
@@ -306,13 +322,28 @@ functions:
   multiply: {} # empty config
 ```
 
-#### Functions Included with `gptextual`
+### Functions Included with `gptextual`
 
 Currently `gptextual` comes with the following example functions:
 
 - `google_web_search` Executes a google search with your personal Google cloud key and custom search engine ID.
 
 More functions are planned in the future.
+
+## UI Configuration
+
+There is a config section directly related to the textual UI:
+
+```yaml
+textual:
+  # When LLMs support streaming, this number specifies after how many response chunks
+  # a refresh and re-layouting of the chat message will be triggered in the textual framework.
+  # A smaller number will give a smoother streaming experience but will lead to more refresh calls.
+  refresh_no_stream_chunks: 5
+
+  # gptextual comes with a light and dark theme.
+  theme: light|dark
+```
 
 ## Logging
 
@@ -409,101 +440,6 @@ Messages in the chatview are focusable. You see the selected message marked. Whe
 - press `c` to copy the whole message text
 - press ` (markdown code block char) to copy only the code blocks inside the message (if any)
 
+# Bug Reports
 
-
-
-Here is a template for the functions section:
-
-```yaml
-functions:
-  google_web_search:
-    api_key: <your key> 
-    cx_id: <your search engine ID>
-```
-
-You can also specify which models support which type of function calling, if any. Currently supported are 'openai_function' for legacy functions or 'openai_tool' for the new parallel API.
-
-Here is a template for the API providers section:
-
-```yaml
-api_config:
-
-  # SAP BTP
-  btp:
-    client_id: str 
-    client_secret: str
-    auth_url: str
-    api_base: str
-
-    # specify which model supports what type of function calling (if any)
-    function_call_support:
-      # Currently supported: 'openai_function' for legacy functions or 'openai_tool' for new parallel API
-      'gpt-4': openai_function
-    
-    # specify which models to chat with for this provider.
-    # The model name will be passed as-is to the LangChain API client,
-    # so make sure the model name exists. If "models" is empty,
-    # hard-coded default models will be taken
-    models:
-      anthropic-claude-v2-100k:
-        context_window: 100000
-      gpt-4:
-        context-window: 8192
-      # etc...
-
-  gen-ai-hub:
-    client_id: str
-    client_secret: str
-    auth_url: str
-    api_base: str
-    resource_group: str
-
-    function_call_support:
-      # support can be 'openai_function' for legacy functions or 'openai_tool' for new parallel API
-      'gpt-4': openai_tool
-
-    models:
-      gpt-4:
-        context-window: 8192 
-
-  # Open AI Native (with personal API key)
-  openai:
-    api_key: <your key>
-
-    # specify which models you want to chat with
-    # the model name has to exist on the API platform
-    models: # Examples
-      gpt-3.5-turbo:
-        context_window: 4096
-      gpt-4:
-        context_window: 8192
-      gpt-4-0125-preview:
-        context_window: 128000
-      
-    function_call_support:
-      # support can be 'openai_function' for legacy functions or 'openai_tool' for new parallel API
-      # Wildcard = All models
-      '*': openai_tool
-  
-  # Google Native (with personal API key)
-  google:
-    api_key: <your key> 
-
-    # no models are specified => Hard-coded default models will apply, this this case 'gemini-pro'
-
-  
-  # SAP Joule
-  joule:
-    api_url: https://...
-    token_url: https://...
-    username: ...
-    # enable setting of password in config for test user use-cases
-    password: ...
-    client_id: ...
-    client_secret: ...
-    bot_name: sap_digital_assistant
-    idp: sap.default
-```
-
-
-
+Submit bugs via GitHub issues in this repo.

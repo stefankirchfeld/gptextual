@@ -154,7 +154,6 @@ class AppConfig(BaseModel):
     functions: Optional[Dict[str, Optional[Dict[str, str]]]] = {}
     textual: Optional[TextualConfig] = TextualConfig()
     api_config: Optional[APIConfig] = APIConfig()
-    system_message: Optional[str] = ""
     log_level: Optional[str] = "INFO"
 
     @staticmethod
