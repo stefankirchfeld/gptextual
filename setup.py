@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="gptextual",
-    version="0.0.1",
+    version="0.0.2",
     packages=find_packages(exclude=["tests"]),
     package_data={"": ["*.tcss"]},
     include_package_data=True,
@@ -15,6 +15,8 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     entry_points={
         "console_scripts": [
@@ -39,6 +41,7 @@ setup(
         "tiktoken~=0.5.2",
         "toolong==1.2.0",
         "pyyaml~=6.0.1",
+        "setuptools~=69.1.0",
     ],
     extras_require={
         "openai": ["langchain-openai~=0.0.5"],
