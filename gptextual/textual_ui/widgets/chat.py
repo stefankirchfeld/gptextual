@@ -244,6 +244,10 @@ class Chat(Widget):
             await child.remove()
 
     async def chat(self, content: str) -> None:
+        if not self.app.app_context.current_model:
+            self.notify("No model selected", title="Error", severity="error", timeout=5)
+            return
+
         message = new_message_of_type(HumanMessage, content=content)
         message.additional_kwargs["id"] = self.uuid_gen.random(20)
         await self.progress_conversation(message)

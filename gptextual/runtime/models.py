@@ -92,6 +92,13 @@ class ModelRegistry:
         for api_provider in APIProvider:
             self.initialize_models_for_provider(api_provider.value)
 
+    def __len__(self):
+        n_models = 0
+        for api_provider in self.models:
+            n_models += len(self.models[api_provider])
+
+        return n_models
+
     def all_models(self):
         for api_provider in self.models:
             for model in self.models[api_provider].values():
@@ -104,7 +111,11 @@ class ModelRegistry:
 
     @property
     def default_model(self) -> ChatModel:
-        return ModelRegistry.model_from_name("gpt-3.5-turbo", APIProvider.OPEN_AI)
+        ans = ModelRegistry.model_from_name("gpt-3.5-turbo", APIProvider.OPEN_AI)
+        if ans is None:
+            for m in self.all_models():
+                return m
+        return ans
 
 
 @dataclass

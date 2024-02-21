@@ -168,9 +168,7 @@ class ChatList(Widget):
 
     def action_export(self):
         if self.current_chat_id:
-            chat = ConversationManager.get_conversation(
-                conversation_id=self.current_chat_id
-            )
+            chat = ConversationManager.get_conversation(self.current_chat_id)
             path = chat.export_to_markdown()
             self.notify(
                 f"Chat was saved as markdown at {path}",

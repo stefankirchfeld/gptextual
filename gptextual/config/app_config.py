@@ -155,6 +155,7 @@ class AppConfig(BaseModel):
     textual: Optional[TextualConfig] = TextualConfig()
     api_config: Optional[APIConfig] = APIConfig()
     system_message: Optional[str] = ""
+    log_level: Optional[str] = "INFO"
 
     @staticmethod
     def get_instance() -> AppConfig:
@@ -169,9 +170,10 @@ class AppConfig(BaseModel):
     def load_config() -> AppConfig:
         config_path = Path.home() / ".gptextual" / "config.yml"
         if config_path.exists():
+            config_data = None
             with open(config_path, "r", encoding="utf-8") as f:
                 config_data = yaml.safe_load(f)
-            return AppConfig(**config_data)
+            return AppConfig(**config_data) if config_data else AppConfig()
         else:
             # If the file is not found, return a default AppConfig instance
             logger().info(

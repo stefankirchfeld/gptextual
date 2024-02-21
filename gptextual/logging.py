@@ -116,7 +116,7 @@ class QueueHandler(logging.handlers.QueueHandler):
 log_path = Path.home() / ".gptextual" / "logging"
 
 
-def default_config():
+def default_config(log_level: str = "INFO"):
     return f"""
   version: 1
   disable_existing_loggers: False
@@ -151,7 +151,7 @@ def default_config():
 
   loggers:
     root:
-      level: INFO  
+      level: {log_level}  
       handlers:
         - queue_handler
   
@@ -159,10 +159,10 @@ def default_config():
   """
 
 
-def setup_logging():
+def setup_logging(log_level: str = "INFO"):
     global _logger
     os.makedirs(name=log_path, exist_ok=True)
-    config = yaml.safe_load(default_config())
+    config = yaml.safe_load(default_config(log_level))
     configurator = DictConfigurator(config)
     config = configurator.configure()
     queue_handler = config["handlers"]["queue_handler"]

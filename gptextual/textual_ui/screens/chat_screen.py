@@ -107,7 +107,7 @@ class ChatScreen(Screen):
     async def action_new_chat(self) -> None:
         chat = self.query_one(Chat)
         await chat.prepare_for_new_chat()
-        chat.chat_options.model_select.focus()
+        chat.chat_options.provider_select.focus()
 
     def action_open_log(self) -> None:
         self.app.push_screen(LogScreen())

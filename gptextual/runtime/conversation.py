@@ -62,6 +62,10 @@ class Conversation:
     model: ChatModel
     title: str | None
     create_timestamp: float | None
+
+    # In-memory conversations can be used for functions that spawn
+    # side conversations with different LLMs. These should not be persisted.
+    in_memory: bool = False
     messages: list[BaseMessage] = field(init=False, default_factory=list)
 
     def __post_init__(self):
@@ -313,6 +317,9 @@ class Conversation:
         return list(context_messages)
 
     def save(self, in_background=True):
+        if self.in_memory:
+            return
+
         def do_save():
             try:
                 if not self._dirty:
@@ -540,6 +547,7 @@ class Conversation:
         model: ChatModel,
         title: str = None,
         system_message: str = None,
+        in_memory: bool = False,
     ):
         if model is None:
             raise ValueError("No model provided for conversation")
@@ -554,6 +562,7 @@ Do NOT escape markdown as codeblocks using '`' chars.All messages will be render
             model=model,
             title=title,
             create_timestamp=datetime.utcnow().timestamp(),
+            in_memory=in_memory,
         )
         conv.append(SystemMessage(content=_system_message))
         return conv

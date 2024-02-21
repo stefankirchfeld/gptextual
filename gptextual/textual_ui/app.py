@@ -21,7 +21,8 @@ from gptextual.textual_ui.widgets.footer import CommandFooter, Command, Field
 class GPTextual(App):
     def __init__(self, context: Optional[AppContext] = None) -> None:
         super().__init__()
-        setup_logging()
+        app_config = AppConfig.get_instance()
+        setup_logging(app_config.log_level)
         load_function_entry_points()
         self.app_context = context or AppContext()
         os.makedirs(conversation_path, exist_ok=True)
