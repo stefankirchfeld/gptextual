@@ -12,7 +12,7 @@
 - LLM streaming (if the model supports it)
 - Search through all conversations and navigate to the exact message you select
 - Export conversations to markdown for sharing/archiving
-- Conversations are stored as [polars](https://pola.rs/) DataFrames, so can easily be processed/exported into other formats if required
+- Conversations are stored as `.parquet` files, so can easily be processed/exported into other formats if required
 - Copy messages or only code blocks to clibboard
 - LLM Function calling
 - Automatic trimming of conversation to the context window size of the LLM (if tokenization model is available)
