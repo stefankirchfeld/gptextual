@@ -103,7 +103,9 @@ For more info on general settings and optimizations when using Textual based app
 
 # Configuration
 
-In order to use `gptextual` you need to create a YAML file at `~/.gptextual/config.yml` and maintain the configuration for at least 1 API provider (OpenAI, Google, etc.) 
+In order to use `gptextual` you need to create a YAML file at `~/.gptextual/config.yml` and maintain the configuration for at least 1 API provider (OpenAI, Google, etc.).
+
+**Note: For any configuration changes in the `config.yml` to take effect, an application restart is required.**
 
 ## API Providers
 
@@ -208,9 +210,9 @@ Currently, the following function calling protocols are supported:
 - Open AI Tool Calls (New parallel API)
 - Open AI Function Calls (Legacy API)
 
-### Configuration
+## Configuring Function Calling
 
-#### Function Call Support
+### Function Call Support
 
 In the `config.yml` you can configure the type of function call support for each model.
 For example, from the [Open AI Website](https://platform.openai.com/docs/guides/function-calling) we see that only a few models support the parallel tool calling API, most of the rest will support the legacy function calling. So we could add the following to the `config.yml`
@@ -230,39 +232,9 @@ api_config:
       # or also specify a wildcard meaning "all other models not specified by name'
       '*': openai_function
 ```
+### Registering functions
 
-#### Functions to be used
-
-Each function which is part of your python environement when starting `gptextual` and which is decorated with the function decorator `gptextual.runtime.function_calling.register_for_function_calling` can be exposed to the LLMs for function calling. In order to actually pick the functions you want to use, you need to list the in the `config.yml`:
-
-```yaml
-
-functions:
-  # In this example the function 'google_web_search' will be exposed to LLMs that support function calling
-  google_web_search:
-    # Functions can also have an optional configuration, in this case Google Cloud API keys
-    api_key: ... # API Key
-    cx_id: ... # Custom search engine ID
-
-  some_other_function: {} # empty config
-```
-
-#### Functions Included with `gptextual`
-
-Currently `gptextual` comes with the following example functions:
-
-- `google_web_search` Executes a google search with your personal Google cloud key and custom search engine ID.
-
-More functions are planned in the future.
-
-#### Developing new functions
-
-`gptextual` enables you to develop your own python functions that will be exposed to the LLMs.
-Steps:
-
-1. Create a python project and implement the desired functions. Follow the guidelines outlined by [LangChain](https://python.langchain.com/docs/modules/model_io/chat/function_calling). You only need to develop the pure python function though without directly applying the LangChain conversion tools. This will be done automatically by `gptextual`.
-
-2. Decorate each desired function in your package with the decorator `gptextual.runtime.function_calling.register_for_function_calling`. 
+#### Develop your function in a new pip package and decorate it with the provided function decorator `register_for_function_calling`:
 
 For example:
 
@@ -270,16 +242,42 @@ For example:
 from gptextual.runtime.function_calling import register_for_function_calling, get_function_config
 
 @register_for_function_calling
-def my_function(param1, param2):
-  # This function has a configuration
-  my_config = get_function_config(my_function) 
-  ...
+def multiply(a: int, a: int):
+  """Multiply two integers together.
+
+    Args:
+        a: First integer
+        b: Second integer
+  """
+  return a * b
+
 
 @register_for_function_calling
-def another_function(param1):
-  ...
+async def google_web_search(query: str) -> str:
+    """
+    Executes a Google search with the specified search string and returns the top 10 search results.
+    For each result, a title, URL and preview snippet is returned.
+
+    Args:
+        query: the query string
+    """
+    # Functions can also access an optional config from the config.yml
+    config = get_function_config(google_web_search)
+    api_key, cx_id = None, None
+    if config:
+        api_key = config.get("api_key", None)
+        cx_id = config.get("cx_id", None)
+    ...
 ```
-3. Define an entry point in the `setup.py`/`pyproject.toml`:
+
+When developing the function, following the guidelines by [LangChain](https://python.langchain.com/docs/modules/model_io/chat/function_calling).
+
+Specifically:
+ - Provide the function description for the LLM in the doc string
+ - Provide the parameters in the docstring as given in the example
+
+
+#### Define an entry point in the `setup.py`/`pyproject.toml` of your project:
 
 ```python
 
@@ -292,7 +290,125 @@ entry_points={
 
 **Note: `gptextual` will only load your entry point, and expect each function to have the decorator above. So specifying one function per module in the entry point is enough, because all functions will be loaded when the module loads.**
 
-# Conversational Runtime
+#### Configure which functions should be used at runtime
+
+Each function in your python environment that is registered via the decorator and entry point can be used for LLM function calling. In order to actually pick the functions you want to use, you need to list them in the `config.yml`:
+
+```yaml
+
+functions:
+  # In this example the function 'google_web_search' will be exposed to LLMs that support function calling
+  google_web_search:
+    # Functions can also have an optional configuration, in this case Google Cloud API keys
+    api_key: ... # API Key
+    cx_id: ... # Custom search engine ID
+
+  multiply: {} # empty config
+```
+
+#### Functions Included with `gptextual`
+
+Currently `gptextual` comes with the following example functions:
+
+- `google_web_search` Executes a google search with your personal Google cloud key and custom search engine ID.
+
+More functions are planned in the future.
+
+## Logging
+
+`gptextual` writes into a JSON-lines log file located at `~/.gptextual/logging/gptextual.jsonl`
+
+The log file can be opened in app with the `Ctrl+L` keyboard shortcut. This will open `TooLong`, which is a very fast, real-time tailing log file viewer.
+
+Inspecting the log can be useful to check if the LLM is called like you expect or to inspect function calling results, for example.
+
+Within `TooLong`, in addition to navigating line by line and searching, you can also navigate via log entry timestamps:
+
+Press:
+- `m`: Navigate one minute forward
+- `M`: Navigate one minute backward
+- `h`: Navigate one hour forward
+- `H`: Navigate one hour backward 
+
+### Configuring the log level
+
+By default, `gptextual` sets the log level to `INFO`.
+
+You can change this in the `config.yml` with:
+
+```yaml
+# other config...
+
+log_level: DEBUG|INFO|WARNING|ERROR|CRITICAL 
+```
+
+## `config.yml` template
+
+A complete `config.yml` for your reference:
+
+```yaml
+api_config:
+  openai:
+    api_key: ... 
+
+    models: # Example: Only want to chat with these 3 models from OpenAI:
+      gpt-3.5-turbo:
+        context_window: 4096
+      gpt-4:
+        context_window: 8192
+      gpt-4-0125-preview:
+        context_window: 128000
+      
+    function_call_support:
+      # onlu activate function calling for GPT-4
+      'gpt-4,gpt-4-0125-preview': 'openai_tool'
+     
+  google:
+    api_key: ...
+    # No models are specified, gptextual will select 'gemini-pro' by default
+  
+  # No SAP API specified, so you will not see that option in the UI
+
+textual:
+  refresh_no_stream_chunks: 5
+  # theme: light
+  theme: dark
+functions:
+  # The gpt-4 models above will be able to call this function!
+  google_web_search:
+    api_key: ... 
+    cx_id: ...
+
+log_level: INFO 
+```
+
+# Conversation Storage
+
+The conversations are stored in folder
+
+`~/.gptextual/conversations`
+
+For each conversation, there will be
+
+- a `json` header file containing id, title, timestamp etc
+- a `parquet` file containing all conversation messages
+
+The `parquet` file can be read with any library that supports it. `gptextual` uses `polars` internally.
+
+
+# Markdown Export
+
+When you export a conversation to markdown in the app, they are stored in folder
+
+`~/.gptextual/exports`
+
+# Copying Messages to clipboard
+
+Messages in the chatview are focusable. You see the selected message marked. When a message is selected, you can
+
+- press `c` to copy the whole message text
+- press ` (markdown code block char) to copy only the code blocks inside the message (if any)
+
 
 
 
@@ -391,6 +507,3 @@ api_config:
 
 
 
-### Applying Configuration Changes
-
-Please note that for any configuration changes to take effect, an application restart is required.
