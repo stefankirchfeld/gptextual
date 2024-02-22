@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gptextual"
-version = "0.0.4"
+version = "0.0.5"
 description = "A configurable, terminal based Chat client for LLMs built with Textual"
 readme = "README.md"
 license = { file="LICENSE" }

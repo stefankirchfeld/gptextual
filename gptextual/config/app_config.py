@@ -45,8 +45,8 @@ class APIProvider(str, Enum):
 
 
 class TextualConfig(BaseModel):
-    refresh_no_stream_chunks: int = 5
-    theme: Optional[str] = "dark"
+    refresh_no_stream_chunks: int = 3
+    theme: Optional[str] = "light"
 
 
 class ModelConfig(BaseModel):

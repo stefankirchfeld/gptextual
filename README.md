@@ -339,7 +339,7 @@ textual:
   # When LLMs support streaming, this number specifies after how many response chunks
   # a refresh and re-layouting of the chat message will be triggered in the textual framework.
   # A smaller number will give a smoother streaming experience but will lead to more refresh calls.
-  refresh_no_stream_chunks: 5
+  refresh_no_stream_chunks: 3
 
   # gptextual comes with a light and dark theme.
   theme: light|dark
@@ -401,9 +401,9 @@ api_config:
   # No SAP API specified, so you will not see that option in the UI
 
 textual:
-  refresh_no_stream_chunks: 5
-  # theme: light
-  theme: dark
+  refresh_no_stream_chunks: 3
+  theme: light
+  # theme: dark
 functions:
   # The gpt-4 models above will be able to call this function!
   google_web_search:
