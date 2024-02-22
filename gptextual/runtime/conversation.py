@@ -440,6 +440,7 @@ class Conversation:
 
                     df = (
                         pl.read_parquet(filepath)
+                        .filter(~(pl.col(MESSAGE_COLUMNS.type) == "system"))
                         .select(MESSAGE_COLUMNS.id, MESSAGE_COLUMNS.content)
                         .with_columns(
                             pl.lit(conv_id).alias("conv_id"),

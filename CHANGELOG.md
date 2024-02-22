@@ -25,6 +25,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Removed deprecated feature E -->
 
+## [0.0.6] - 2024-02-22
+
+### Changed
+
+- Don't include system messages in search results
+
 ## [0.0.5] - 2024-02-21
 
 ### Added
