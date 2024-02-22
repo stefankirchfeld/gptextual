@@ -189,6 +189,8 @@ You will get these settings from your SAP GenAI Hub setup.
 ## Models
 
 For each API provider you can specify which models should be selectable in the app.
+This is optional for all API providers except `gen-ai-hub`. 
+For OpenAI and Google, default models will be selected, reflecting the models available at the time of the `gptextual` release.
 
 For example:
 
@@ -214,8 +216,6 @@ The `contex_window` parameter is used to
 
 - automatically default a reasonable value for the maximum number of output tokens requested
 - automatically trim the next request to only contain conversation messages that still fit into the context window size
-
-**Note: If you don't specify any models, default models will be chosen which reflect the time of the `gptextual` release. For SAP Gen AI Hub, no defaults are provided, so the model config is mandatory.**
 
 ## Function Calling
 
