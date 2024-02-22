@@ -101,9 +101,6 @@ class ChatScreen(Screen):
         else:
             conversation_header.model_name = f"{model.name}@{model.api_provider}"
 
-        self.app.app_context.model_name = model.name
-        self.app.app_context.api_provider = model.api_provider
-
     async def action_new_chat(self) -> None:
         chat = self.query_one(Chat)
         await chat.prepare_for_new_chat()

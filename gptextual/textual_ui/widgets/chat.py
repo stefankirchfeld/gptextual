@@ -258,7 +258,8 @@ class Chat(Widget):
             assert self.chat_options is not None
             self.chat_options.display = False
             self.chat_id = ConversationManager.create_conversation(
-                model=self.app.app_context.current_model
+                model=self.app.app_context.current_model,
+                system_message=self.app.app_context.system_message,
             )
             self.update_header(
                 title=Conversation.preview_from_messages([message]),

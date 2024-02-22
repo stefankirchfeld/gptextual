@@ -127,6 +127,7 @@ class AppContext:
     chat_message: Optional[str] = None
     model_name: str = None
     api_provider: str = None
+    system_message: str = None
 
     @property
     def current_model(self) -> ChatModel:

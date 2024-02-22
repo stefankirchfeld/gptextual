@@ -557,7 +557,7 @@ The current UTC datetime is {datetime.utcnow()}.
 Do not escape markdown as codeblocks using '`' chars.Messages will be rendered as markdown by default!
 """
         if system_message is not None:
-            _system_message += f"\n{system_message}"
+            _system_message += f"{system_message}\n{_system_message}"
         conv = cls(
             id=ShortUUID().random(20),
             model=model,
