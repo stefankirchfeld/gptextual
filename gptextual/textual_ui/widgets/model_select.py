@@ -80,7 +80,7 @@ class ModelSelect(Widget, can_focus=True):
             self.app.app_context.model_name = model.name
             self.app.app_context.api_provider = model.api_provider
 
-        if system_message:
+        if system_message is not None:
             self.app.app_context.system_message = system_message
 
     def _update_model_select(self, api_provider: str):

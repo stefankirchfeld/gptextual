@@ -24,6 +24,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Removed
 
 - Removed deprecated feature E -->
+## [0.0.7] - 2024-02-27
+
+### Changed
+
+- Fix a bug where clearing the system message field when creating a new chat would still apply the old system message
 
 ## [0.0.6] - 2024-02-22
 
