@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="gptextual",
-    version="0.0.7",
+    version="0.0.8",
     packages=find_packages(exclude=["tests"]),
     package_data={"": ["*.tcss"]},
     include_package_data=True,
@@ -15,7 +15,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "License :: OSI Approved :: MIT License",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     entry_points={
