@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="gptextual",
-    version="0.0.8",
+    version="0.0.9",
     packages=find_packages(exclude=["tests"]),
     package_data={"": ["*.tcss"]},
     include_package_data=True,
@@ -30,8 +30,8 @@ setup(
     install_requires=[
         "httpx~=0.26.0",
         "humanize~=4.9.0",
-        "langchain~=0.1.5",
-        "langchain-core~=0.1.19",
+        "langchain~=0.1.10",
+        "langchain-core~=0.1.28",
         "polars~=0.20.7",
         "pydantic~=2.6.1",
         "pyperclip~=1.8.2",
@@ -44,13 +44,15 @@ setup(
         "setuptools~=69.1.0",
     ],
     extras_require={
-        "openai": ["langchain-openai~=0.0.5"],
+        "openai": ["langchain-openai~=0.0.8"],
         "google": ["langchain-google-genai~=0.0.9"],
         "sap": ["generative-ai-hub-sdk~=1.2.2"],
+        "anthropic": ["langchain-anthropic~=0.1.1"],
         "all": [
-            "langchain-openai~=0.0.5",
+            "langchain-openai~=0.0.8",
             "langchain-google-genai~=0.0.9",
             "generative-ai-hub-sdk~=1.2.2",
+            "langchain-anthropic~=0.1.1",
         ],
     },
 )

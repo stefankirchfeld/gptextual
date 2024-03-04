@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gptextual"
-version = "0.0.8"
+version = "0.0.9"
 description = "A configurable, terminal based Chat client for LLMs built with Textual"
 readme = "README.md"
 license = { file="LICENSE" }
@@ -23,8 +23,8 @@ classifiers = [
 dependencies = [
     "httpx~=0.26.0",
     "humanize~=4.9.0",
-    "langchain~=0.1.5",
-    "langchain-core~=0.1.19",
+    "langchain~=0.1.10",
+    "langchain-core~=0.1.28",
     "polars~=0.20.7",
     "pydantic~=2.6.1",
     "pyperclip~=1.8.2",
@@ -43,10 +43,11 @@ dependencies = [
 
 
 [project.optional-dependencies]
-openai = ["langchain-openai~=0.0.5"]
+openai = ["langchain-openai~=0.0.8"]
 google = ["langchain-google-genai~=0.0.9"]
 sap = ["generative-ai-hub-sdk~=1.2.2"]
-all = ["langchain-openai~=0.0.5", "langchain-google-genai~=0.0.9", "generative-ai-hub-sdk~=1.2.2"]
+anthropic = ["langchain-anthropic~=0.1.1"]
+all = ["langchain-openai~=0.0.8", "langchain-google-genai~=0.0.9", "generative-ai-hub-sdk~=1.2.2", "langchain-anthropic~=0.1.1"]
 
 [project.scripts]
 gptx = "gptextual.textual_ui.app:run"

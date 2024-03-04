@@ -88,6 +88,10 @@ class Conversation:
         message = ensure_list(message)
         with self._messages_lock:
             for m in message:
+                if isinstance(m, AIMessageChunk):
+                    m = AIMessage(
+                        content=m.content, additional_kwargs=m.additional_kwargs
+                    )
                 if "id" not in m.additional_kwargs:
                     m.additional_kwargs["id"] = self.uuid_gen.random(20)
                 self.messages.append(m)

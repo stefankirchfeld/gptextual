@@ -24,6 +24,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Removed
 
 - Removed deprecated feature E -->
+
+## [0.0.9] - 2024-03-04
+
+### Added
+
+- Support for native Anthropic API
+
+## [0.0.8] - 2024-03-02
+
+### Changed
+
+- Changed LICENSE to MIT license
+
 ## [0.0.7] - 2024-02-27
 
 ### Changed

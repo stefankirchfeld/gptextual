@@ -21,6 +21,12 @@ except ImportError:
     ChatGoogleGenerativeAI = None
 
 try:
+    from langchain_anthropic import ChatAnthropic
+except ImportError:
+    ChatAnthropic = None
+
+
+try:
     from gen_ai_hub.proxy.langchain.init_models import (
         init_llm as sap_genai_create_langchain_llm,
     )
@@ -28,6 +34,7 @@ try:
 except ImportError:
     sap_genai_create_langchain_llm = None
     set_proxy_version = None
+
 
 from gptextual.logging import logger
 
@@ -42,6 +49,7 @@ class APIProvider(str, Enum):
     SAP_GEN_AI = "gen-ai-hub"
     OPEN_AI = "openai"
     GOOGLE = "google"
+    ANTHROPIC = "anthropic"
 
 
 class TextualConfig(BaseModel):
@@ -57,8 +65,7 @@ class APIProviderConfig(BaseModel):
     function_call_support: Optional[Dict[str, str]] = {}
     models: Optional[Dict[str, ModelConfig | None]] = {}
 
-    def create_config_file(self):
-        ...
+    def create_config_file(self): ...
 
     def _write_config_file(self, *, folder: Path, filename: str, payload: str):
         os.makedirs(folder, exist_ok=True)
@@ -118,6 +125,23 @@ class OpenAIConfig(APIProviderConfig):
         )
 
 
+class AnthropicConfig(APIProviderConfig):
+    api_key: str
+    models: Optional[Dict[str, ModelConfig | None]] = {
+        "claude-3-opus-20240229": ModelConfig(context_window=200000),
+        "claude-3-sonnet-20240229": ModelConfig(context_window=200000),
+        "claude-2.1": ModelConfig(context_window=200000),
+        "claude-instant-1.2": ModelConfig(context_window=100000),
+    }
+
+    def create_model_instance(self, model_name: str, **kwargs) -> BaseLanguageModel:
+        return (
+            ChatAnthropic(model=model_name, anthropic_api_key=self.api_key, **kwargs)
+            if ChatAnthropic
+            else None
+        )
+
+
 class GoogleConfig(APIProviderConfig):
     api_key: str
     models: Optional[Dict[str, ModelConfig | None]] = {
@@ -141,6 +165,7 @@ class APIConfig(BaseModel):
     gen_ai_hub: Optional[GenAIHubConfig] = None
     openai: Optional[OpenAIConfig] = None
     google: Optional[GoogleConfig] = None
+    anthropic: Optional[AnthropicConfig] = None
 
     def _create_config_files(self):
         if self.gen_ai_hub:

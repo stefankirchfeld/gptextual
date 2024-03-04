@@ -66,8 +66,9 @@ gptextual can be installed with these flavors:
 
 - `gptextual[openai]` Only the native OpenAI clients will be installed
 - `gptextual[google]` Only the native Google GenAI clients will be installed
+- `gptextual[anthropic]` Only the native Anthropic clients will be installed
 - `gptextual[sap]` Only the generative ai hub SDK clients by SAP will be installed
-- `gptextual[all]` All supported clients in any given release will be installed
+- `gptextual[all]` All supported clients of the current release will be installed
 
 This way you can limit your installation footprint if you only want to use native OpenAI, for example.
 
@@ -83,6 +84,10 @@ api_config:
   
   # Google Gen AI APIs
   google:
+    api_key: <your key>
+  
+  # Anthropic API
+  anthropic:
     api_key: <your key>
 
   # SAP Gen AI Hub for enterprise scenarios
@@ -169,6 +174,16 @@ api_config:
     api_key: <your key>
 
 ```
+
+### Anthropic
+
+```yaml
+api_config:
+  anthropic:
+    api_key: <your key> # mandatory
+
+```
+
 
 ### SAP GenAI Hub
 
