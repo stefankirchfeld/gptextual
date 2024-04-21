@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from langchain_core.language_models import BaseLanguageModel
+from langchain_core.language_models import BaseChatModel
 
 from gptextual.config.app_config import APIProviderConfig
 
@@ -13,7 +13,7 @@ class ChatModel:
     name: str
     api_provider: str
     context_window: int = 4097
-    _model: BaseLanguageModel = None
+    _model: BaseChatModel = None
 
     def __hash__(self) -> int:
         return hash(self.name)

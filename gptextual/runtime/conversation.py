@@ -30,7 +30,10 @@ from gptextual.runtime.langchain.schema import (
     is_function_or_tool_call,
     is_tool_related_message,
 )
-from gptextual.runtime.function_calling import FunctionCallSupport
+from gptextual.runtime.function_calling import (
+    bind_tools,
+    invoke_tools,
+)
 from gptextual.runtime.models import ModelRegistry, ChatModel
 from gptextual.logging import logger
 
@@ -90,7 +93,9 @@ class Conversation:
             for m in message:
                 if isinstance(m, AIMessageChunk):
                     m = AIMessage(
-                        content=m.content, additional_kwargs=m.additional_kwargs
+                        content=m.content,
+                        additional_kwargs=m.additional_kwargs,
+                        tool_calls=m.tool_calls,
                     )
                 if "id" not in m.additional_kwargs:
                     m.additional_kwargs["id"] = self.uuid_gen.random(20)
@@ -199,17 +204,10 @@ class Conversation:
 
             self.messages.pop()
             response = response.message
+            function_results = None
             if response:
                 self.append(response)
-
-            function_calling = FunctionCallSupport.forModelName(
-                model_name=self.model.name, api_provider=self.model.api_provider
-            )
-            function_results = (
-                await function_calling.execute_function_call(response)
-                if function_calling
-                else None
-            )
+                function_results = await invoke_tools(response)
 
             if function_results:
                 async for resp in self._progress_llm(function_results, autosave=False):
@@ -230,12 +228,13 @@ class Conversation:
 
     async def _stream_llm(self, messages):
         try:
-            function_kwargs = {}
-            function_calling = FunctionCallSupport.forModelName(
-                model_name=self.model.name, api_provider=self.model.api_provider
-            )
-            if function_calling:
-                function_kwargs = function_calling.get_kwargs()
+            # function_kwargs = {}
+            # function_calling = FunctionCallSupport.forModelName(
+            #     model_name=self.model.name, api_provider=self.model.api_provider
+            # )
+            # if function_calling:
+            #     function_kwargs = function_calling.get_kwargs()
+            llm_model = bind_tools(self.model.llm_model)
 
             if logger().getEffectiveLevel() <= logging.INFO:
                 log_msg = messages[-3:] if len(messages) >= 3 else [*messages]
@@ -251,7 +250,7 @@ class Conversation:
                             }
                             for m in log_msg
                         ],
-                        "functions": function_kwargs,
+                        "model_kwargs": llm_model.kwargs,
                     },
                 )
 
@@ -267,9 +266,7 @@ class Conversation:
                     f"Cannot get message from unknown chunk type {chunk.__class__}"
                 )
 
-            async for chunk in self.model.llm_model.astream(
-                messages, **function_kwargs
-            ):
+            async for chunk in llm_model.astream(messages):
                 try:
                     yield to_message(chunk)
                 except Exception as ex:
@@ -358,7 +355,7 @@ class Conversation:
                 for m in messages:
                     rows[MESSAGE_COLUMNS.id].append(m.additional_kwargs["id"])
                     rows[MESSAGE_COLUMNS.type].append(m.type)
-                    rows[MESSAGE_COLUMNS.content].append(m.content)
+                    rows[MESSAGE_COLUMNS.content].append(m.content or "")
                     rows[MESSAGE_COLUMNS.additionals].append(
                         json.dumps(m.additional_kwargs)
                     )

@@ -17,8 +17,7 @@ from gptextual.utils import format_timestamp
 from gptextual.runtime.langchain.schema import new_message_of_type
 
 
-class ChatboxContainer(Container):
-    ...
+class ChatboxContainer(Container): ...
 
 
 class Chatbox(Widget, can_focus=True):
@@ -101,7 +100,9 @@ class Chatbox(Widget, can_focus=True):
 
     @property
     def markdown(self) -> Markdown:
-        return Markdown(self.message.content or "")
+        return Markdown(
+            (isinstance(self.message.content, str) and self.message.content) or ""
+        )
 
     def render(self) -> RenderableType:
         return self.markdown

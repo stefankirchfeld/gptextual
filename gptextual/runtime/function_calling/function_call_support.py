@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import pkg_resources
+import json
 from asyncio import iscoroutine
 from enum import Enum
 from functools import cache
 from typing import List
+from langchain_core.language_models import BaseChatModel
+from langchain_core.tools import tool
 from langchain_core.utils.function_calling import (
     convert_to_openai_function,
     convert_to_openai_tool,
@@ -17,6 +20,7 @@ from gptextual.runtime.langchain.schema import Function, ToolCalls
 
 # Central repository for registered functions
 _FUNCTIONS_BY_NAME = {}
+_LANGCHAIN_TOOLS_BY_NAME = {}
 
 
 class FunctionCallSupport(str, Enum):
@@ -166,12 +170,59 @@ def load_function_entry_points():
         entry_point.load()
 
 
+def bind_tools(model: BaseChatModel):
+    app_config = AppConfig.get_instance()
+    function_names = [
+        name
+        for name in _FUNCTIONS_BY_NAME.keys()
+        if app_config.functions and name in app_config.functions
+    ]
+    tools = [_LANGCHAIN_TOOLS_BY_NAME.get(name, None) for name in function_names]
+    tools = [t for t in tools if t is not None]
+    if tools:
+        try:
+            return model.bind_tools(tools)
+        except NotImplementedError:
+            return model
+
+
+async def invoke_tools(message: AIMessage):
+    results = []
+    for tool_call in message.tool_calls:
+        fname = tool_call["name"].lower()
+        func = get_function(fname)
+        if func is not None:
+            try:
+                if isinstance(tool_call["args"], str):
+                    args = json.loads(tool_call["args"])
+                else:
+                    args = tool_call["args"]
+                result = func(**args)
+                if iscoroutine(result):
+                    result = await result
+                results.append(
+                    ToolMessage(tool_call_id=tool_call["id"], content=str(result))
+                )
+            except Exception as ex:
+                logger().error(
+                    f"There was an error executing tool function {fname}: {ex}"
+                )
+                results.append(
+                    ToolMessage(
+                        tool_call_id=tool_call["id"],
+                        content=f"There was an error executing tool function {fname}: {ex}. Try to fix the error or continue without it.",
+                    )
+                )
+    return results
+
+
 def get_function(function_name: str):
     return _FUNCTIONS_BY_NAME.get(function_name, None)
 
 
 def register_for_function_calling(func):
     _FUNCTIONS_BY_NAME[func.__name__] = func
+    _LANGCHAIN_TOOLS_BY_NAME[func.__name__] = tool(func)
     return func
 
 
