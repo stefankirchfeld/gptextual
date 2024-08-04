@@ -228,17 +228,11 @@ class Conversation:
 
     async def _stream_llm(self, messages):
         try:
-            # function_kwargs = {}
-            # function_calling = FunctionCallSupport.forModelName(
-            #     model_name=self.model.name, api_provider=self.model.api_provider
-            # )
-            # if function_calling:
-            #     function_kwargs = function_calling.get_kwargs()
-            llm_model = bind_tools(self.model.llm_model)
-
+            llm_model = bind_tools(self.model)
             if logger().getEffectiveLevel() <= logging.INFO:
                 log_msg = messages[-3:] if len(messages) >= 3 else [*messages]
                 log_msg.reverse()
+                log_model_kwargs = getattr(llm_model, "kwargs", {})
                 logger().info(
                     f"Calling model {self.model.name}@{self.model.api_provider}",
                     extra={
@@ -250,7 +244,7 @@ class Conversation:
                             }
                             for m in log_msg
                         ],
-                        "model_kwargs": llm_model.kwargs,
+                        "model_kwargs": log_model_kwargs,
                     },
                 )
 

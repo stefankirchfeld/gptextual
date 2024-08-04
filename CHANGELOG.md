@@ -25,6 +25,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Removed deprecated feature E -->
 
+## [0.0.10] - 2024-04-21
+
+### Changed
+
+- Adapted to Langchains new way of tool calling (`bind_tools` API plus `tool_calls` property on the `AIMessage`)
+- Function calling can now be enabled or disabled per API provider and model name in a more simple way
+- OpenAI and Anthropic models now support function calling. Sreaming is disabled for Anthropic models if function calling is enabled though, due to limitations in the Anthropic API.
+
 ## [0.0.9] - 2024-03-04
 
 ### Added

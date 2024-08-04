@@ -4,11 +4,11 @@ import os
 from enum import Enum
 import yaml
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 import json
 
 from langchain_core.language_models import BaseLanguageModel
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 try:
     from langchain_openai import ChatOpenAI as LangChainChatOpenAI
@@ -62,8 +62,8 @@ class ModelConfig(BaseModel):
 
 
 class APIProviderConfig(BaseModel):
-    function_call_support: Optional[Dict[str, str]] = {}
-    models: Optional[Dict[str, ModelConfig | None]] = {}
+    models: Optional[Dict[str, ModelConfig | None]] = Field(default_factory=dict)
+    function_calling: Optional[List[str]] = Field(default_factory=list)
 
     def create_config_file(self): ...
 
@@ -145,7 +145,7 @@ class AnthropicConfig(APIProviderConfig):
 class GoogleConfig(APIProviderConfig):
     api_key: str
     models: Optional[Dict[str, ModelConfig | None]] = {
-        "gemini-pro": ModelConfig(context_window=30720)
+        "gemini-1.5-pro-latest": ModelConfig(context_window=1000000)
     }
 
     def create_model_instance(self, model_name: str, **kwargs) -> BaseLanguageModel:
